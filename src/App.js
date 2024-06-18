@@ -1,25 +1,38 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect, useState } from 'react';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+const DaftarBerita = () => {
+    const [news, setNews] = useState([]);
 
-export default App;
+    useEffect(() => {
+        const fetchNews = async () => {
+          try {
+            const response = await fetch('http://localhost:5000'); 
+            if (!response.ok) {
+              throw new Error('Failed to fetch news');
+            }
+            const data = await response.json();
+            setNews(data);
+          } catch (error) {
+            console.error(error);
+          }
+        };
+    
+        fetchNews();
+      }, []);
+
+    return (
+        <div>
+            <h1>Daftar Berita</h1>
+            <ul>
+                {news.map(item => (
+                    <li key={item.id_berita}>
+                        <h2>{item.judul_berita}</h2>
+                        <p>{item.ringkasan}</p>
+                    </li>
+                ))}
+            </ul>
+        </div>
+    );
+};
+
+export default DaftarBerita;
